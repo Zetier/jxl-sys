@@ -4,10 +4,13 @@ Rust bindings to [libjxl](https://github.com/libjxl/libjxl)
 
 ## Building
 
-Before building, you'll need to make sure that git submodules are initialized:
+Before building, you will need to make sure that git submodules are initialized:
 ```bash
 git submodule update --init --recursive
 ```
+
+You will also need to make sure you have all prerequisites to build `libjxl`.
+Refer to `libjxl/BUILDING.md` for detailed instructions.
 
 Then you can build with `cargo`:
 ```bash
