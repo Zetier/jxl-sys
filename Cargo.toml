@@ -1,0 +1,24 @@
+[package]
+name = "jxl-sys"
+version = "0.1.0+libjxl-0.11.1"
+authors = [
+  "ApertureC Team <aperturec@zetier.com>",
+  "Joe Kale <joe@zetier.com>"
+]
+edition = "2024"
+repository = "https://github.com/zetier/jxl-sys"
+description = "bindings to libjxl"
+links = "jxl"
+license = "MIT OR Apache-2.0"
+keywords = ["jpeg-xl", "jxl", "libjxl", "libjpeg-xl", "jpegxl", "libjpegxl"]
+categories = ["multimedia", "graphics", "external-ffi-bindings"]
+
+[build-dependencies]
+anyhow = "1"
+bindgen = "0.71"
+cmake = "0.1"
+regex = "1"
+semver = "1"
+
+[dev-dependencies]
+semver = "1"
