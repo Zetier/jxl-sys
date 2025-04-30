@@ -55,7 +55,10 @@ fn get_libjxl_source(version: &semver::Version, out_dir: &Path) -> Result<PathBu
     let mut decoder = GzDecoder::new(resp.body_mut().as_reader());
     let mut archive = Archive::new(&mut decoder);
     archive.unpack(out_dir)?;
-    let libjxl_dir = out_dir.join(format!("libjxl-{}.{}.{}", version.major, version.minor, version.patch));
+    let libjxl_dir = out_dir.join(format!(
+        "libjxl-{}.{}.{}",
+        version.major, version.minor, version.patch
+    ));
     Command::new(libjxl_dir.join("deps.sh")).spawn()?.wait()?;
 
     Ok(libjxl_dir)
