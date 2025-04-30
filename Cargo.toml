@@ -10,7 +10,7 @@ repository = "https://github.com/zetier/jxl-sys"
 description = "bindings to libjxl"
 links = "jxl"
 license = "MIT OR Apache-2.0"
-keywords = ["jpeg-xl", "jxl", "libjxl", "libjpeg-xl", "jpegxl", "libjpegxl"]
+keywords = ["jpeg-xl", "jxl", "libjxl", "jpegxl", "libjpegxl"]
 categories = ["multimedia", "graphics", "external-ffi-bindings"]
 
 [build-dependencies]
