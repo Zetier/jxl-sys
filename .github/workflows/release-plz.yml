@@ -9,13 +9,18 @@ jobs:
   release-plz-release:
     name: Release-plz release
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'Zetier' }}
     permissions:
       contents: write
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
-      - uses: ./.github/actions/rust-common-setup
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
       - name: Run release-plz
         uses: release-plz/action@v0.5
         with:
@@ -27,6 +32,7 @@ jobs:
   release-plz-pr:
     name: Release-plz PR
     runs-on: ubuntu-latest
+    if: ${{ github.repository_owner == 'Zetier' }}
     permissions:
       pull-requests: write
       contents: write
@@ -34,10 +40,14 @@ jobs:
       group: release-plz-${{ github.ref }}
       cancel-in-progress: false
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v4
         with:
+          fetch-depth: 0
           submodules: recursive
-      - uses: ./.github/actions/rust-common-setup
+          token: ${{ secrets.GITHUB_TOKEN }}
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
       - name: Run release-plz
         uses: release-plz/action@v0.5
         with:

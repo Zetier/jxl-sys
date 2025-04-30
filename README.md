@@ -3,12 +3,18 @@
 Rust bindings to [libjxl](https://github.com/libjxl/libjxl)
 
 ## Building
+Before building, you will need to make sure that git submodules are initialized:
+```bash
+git submodule update --init --recursive
+```
 
-You will need to make sure you have all prerequisites to build `libjxl`. Refer
-to `libjxl/BUILDING.md` for detailed instructions.
+You will also need to make sure you have all prerequisites to build `libjxl`.
+Refer to `libjxl/BUILDING.md` for detailed instructions.
 
-The build process pulls `libjxl` from GitHub, so you will need to be connected
-to the internet.
+Then you can build with `cargo`:
+```bash
+cargo build
+```
 
 ## License
 `jxl-sys` is primarily distributed under the terms of both the MIT license and

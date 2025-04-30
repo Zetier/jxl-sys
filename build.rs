@@ -1,21 +1,12 @@
-use anyhow::{Result, anyhow, bail, ensure};
+use anyhow::{Result, anyhow, bail};
 use cmake::Config;
-use flate2::read::GzDecoder;
 use regex::Regex;
 use semver::Version;
-use std::{
-    env,
-    ffi::OsStr,
-    fs,
-    path::{Path, PathBuf},
-    process::Command,
-    thread,
-};
-use tar::Archive;
+use std::{env, ffi::OsStr, fs, path::PathBuf, thread};
 
 const PREFIX: &str = "libjxl-";
 
-fn extract_crate_libjxl_version() -> Result<semver::Version> {
+fn validate_version() -> Result<()> {
     let crate_ver = Version::parse(&env::var("CARGO_PKG_VERSION")?)?;
 
     if !crate_ver.build.starts_with(PREFIX) {
@@ -25,11 +16,9 @@ fn extract_crate_libjxl_version() -> Result<semver::Version> {
         );
     }
     let libjxl_meta_str = &crate_ver.build[PREFIX.len()..];
-    Ok(Version::parse(libjxl_meta_str)?)
-}
+    let libjxl_meta = Version::parse(libjxl_meta_str)?;
 
-fn extract_downloaded_libjxl_version(source_path: &Path) -> Result<semver::Version> {
-    let cmake_txt = fs::read_to_string(source_path.join("lib/CMakeLists.txt"))?;
+    let cmake_txt = fs::read_to_string("libjxl/lib/CMakeLists.txt")?;
     let cap = |var: &str| {
         Regex::new(&format!(r#"set\({}\s+(\d+)\)"#, var))?
             .captures(&cmake_txt)
@@ -37,47 +26,33 @@ fn extract_downloaded_libjxl_version(source_path: &Path) -> Result<semver::Versi
             .map(|m| m.as_str())
             .ok_or(anyhow!("`{}` not found in CMakeLists.txt", var))
     };
-    let downloaded_version_str = format!(
+    let upstream_str = format!(
         "{}.{}.{}",
         cap("JPEGXL_MAJOR_VERSION")?,
         cap("JPEGXL_MINOR_VERSION")?,
         cap("JPEGXL_PATCH_VERSION")?,
     );
-    Ok(Version::parse(&downloaded_version_str)?)
-}
+    let upstream = Version::parse(&upstream_str)?;
 
-fn get_libjxl_source(version: &semver::Version, out_dir: &Path) -> Result<PathBuf> {
-    let url = format!(
-        "https://github.com/libjxl/libjxl/archive/refs/tags/v{}.{}.{}.tar.gz",
-        version.major, version.minor, version.patch
-    );
-    let mut resp = ureq::get(&url).call()?;
-    let mut decoder = GzDecoder::new(resp.body_mut().as_reader());
-    let mut archive = Archive::new(&mut decoder);
-    archive.unpack(out_dir)?;
-    let libjxl_dir = out_dir.join(format!(
-        "libjxl-{}.{}.{}",
-        version.major, version.minor, version.patch
-    ));
-    Command::new(libjxl_dir.join("deps.sh")).spawn()?.wait()?;
+    if libjxl_meta != upstream {
+        bail!(
+            "version mismatch: crate metadata says libjxl={} but upstream is {}",
+            libjxl_meta,
+            upstream
+        );
+    }
 
-    Ok(libjxl_dir)
+    Ok(())
 }
 
 fn main() -> Result<()> {
-    let out_dir = PathBuf::from(env::var("OUT_DIR")?);
-    let libjxl_version = extract_crate_libjxl_version()?;
-    let libjxl_source = get_libjxl_source(&libjxl_version, &out_dir)?;
-    ensure!(
-        extract_downloaded_libjxl_version(&libjxl_source)? == libjxl_version,
-        "version mismatch between crate and downloaded libjxl"
-    );
-
-    println!("cargo:rerun-if-changed={}", libjxl_source.display());
+    println!("cargo:rerun-if-changed=libjxl/");
     println!("cargo:rustc-link-lib=static=jxl");
     println!("cargo:rustc-link-lib=dylib=stdc++");
 
-    let dst = Config::new(libjxl_source)
+    validate_version()?;
+
+    let dst = Config::new("libjxl")
         .define("BUILD_TESTING", "OFF")
         .define("BUILD_SHARED_LIBS", "OFF")
         .define("JPEGXL_ENABLE_BENCHMARK", "OFF")
@@ -127,7 +102,7 @@ fn main() -> Result<()> {
 
     bindings
         .generate()?
-        .write_to_file(out_dir.join("bindings.rs"))?;
+        .write_to_file(PathBuf::from(env::var("OUT_DIR")?).join("bindings.rs"))?;
 
     Ok(())
 }
