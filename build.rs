@@ -51,8 +51,8 @@ fn get_libjxl_source(version: &semver::Version, out_dir: &Path) -> Result<PathBu
         "https://github.com/libjxl/libjxl/archive/refs/tags/v{}.{}.{}.tar.gz",
         version.major, version.minor, version.patch
     );
-    let resp = reqwest::blocking::get(&url)?.error_for_status()?;
-    let mut decoder = GzDecoder::new(resp);
+    let mut resp = ureq::get(&url).call()?;
+    let mut decoder = GzDecoder::new(resp.body_mut().as_reader());
     let mut archive = Archive::new(&mut decoder);
     archive.unpack(out_dir)?;
     let libjxl_dir = out_dir.join(format!("libjxl-{}.{}.{}", version.major, version.minor, version.patch));
