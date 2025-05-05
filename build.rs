@@ -48,6 +48,12 @@ fn validate_version() -> Result<()> {
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=libjxl/");
     println!("cargo:rustc-link-lib=static=jxl");
+    println!("cargo:rustc-link-lib=static=jxl_cms");
+    println!("cargo:rustc-link-lib=static=jxl_threads");
+    println!("cargo:rustc-link-lib=static=hwy");
+    println!("cargo:rustc-link-lib=static=brotlidec");
+    println!("cargo:rustc-link-lib=static=brotlienc");
+    println!("cargo:rustc-link-lib=static=brotlicommon");
     println!("cargo:rustc-link-lib=dylib=stdc++");
 
     validate_version()?;
@@ -72,8 +78,10 @@ fn main() -> Result<()> {
         .build();
 
     let include = dst.join("include");
-    let lib = dst.join("lib");
-    println!("cargo:rustc-link-search=native={}", lib.display());
+    println!(
+        "cargo:rustc-link-search=native={}",
+        dst.join("lib").display()
+    );
 
     let include_jxl = include.join("jxl");
     let mut bindings = bindgen::Builder::default()
@@ -82,6 +90,7 @@ fn main() -> Result<()> {
         .default_enum_style(bindgen::EnumVariation::Rust {
             non_exhaustive: true,
         })
+        .derive_default(true)
         .generate_comments(true)
         .use_core();
 
