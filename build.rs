@@ -82,6 +82,10 @@ fn main() -> Result<()> {
         "cargo:rustc-link-search=native={}",
         dst.join("lib").display()
     );
+    println!(
+        "cargo:rustc-link-search=native={}",
+        dst.join("lib64").display()
+    );
 
     let include_jxl = include.join("jxl");
     let mut bindings = bindgen::Builder::default()
