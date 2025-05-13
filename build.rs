@@ -54,6 +54,10 @@ fn main() -> Result<()> {
     println!("cargo:rustc-link-lib=static=brotlidec");
     println!("cargo:rustc-link-lib=static=brotlienc");
     println!("cargo:rustc-link-lib=static=brotlicommon");
+
+    #[cfg(target_os = "macos")]
+    println!("cargo:rustc-link-lib=c++");
+    #[cfg(target_os = "linux")]
     println!("cargo:rustc-link-lib=dylib=stdc++");
 
     validate_version()?;
