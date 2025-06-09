@@ -42,7 +42,7 @@ exclude = [
 
 [build-dependencies]
 anyhow = "1"
-bindgen = { version = "0.71", default-features = false, features = ["runtime"] }
+bindgen = { version = "0.72", default-features = false, features = ["runtime"] }
 cmake = "0.1"
 regex = "1"
 semver = "1"
