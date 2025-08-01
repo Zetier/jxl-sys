@@ -20,7 +20,7 @@ fn validate_version() -> Result<()> {
 
     let cmake_txt = fs::read_to_string("libjxl/lib/CMakeLists.txt")?;
     let cap = |var: &str| {
-        Regex::new(&format!(r#"set\({}\s+(\d+)\)"#, var))?
+        Regex::new(&format!(r#"set\({var}\s+(\d+)\)"#))?
             .captures(&cmake_txt)
             .and_then(|c| c.get(1))
             .map(|m| m.as_str())
