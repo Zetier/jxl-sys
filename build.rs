@@ -2,7 +2,7 @@ use anyhow::{Result, anyhow, bail};
 use cmake::Config;
 use regex::Regex;
 use semver::Version;
-use std::{env, ffi::OsStr, fs, path::PathBuf, thread};
+use std::{env, ffi::OsStr, fs, path::PathBuf, thread, process::Command};
 
 const PREFIX: &str = "libjxl-";
 
@@ -60,7 +60,24 @@ fn main() -> Result<()> {
     #[cfg(target_os = "linux")]
     println!("cargo:rustc-link-lib=dylib=stdc++");
 
-    validate_version()?;
+    let use_latest = env::var("CARGO_FEATURE_JXL_LATEST").is_ok();
+    if use_latest {
+        println!("cargo:warning=jxl-latest feature enabled: updating libjxl to latest main");
+        Command::new("git")
+            .args(&["submodule", "update", "--init", "--recursive", "libjxl"])
+            .status()?;
+        Command::new("git")
+            .args(&["-C", "libjxl", "fetch", "origin", "main"])
+            .status()?;
+        Command::new("git")
+            .args(&["-C", "libjxl", "checkout", "main"])
+            .status()?;
+        Command::new("git")
+            .args(&["-C", "libjxl", "pull", "--ff-only"])
+            .status()?;
+    } else {
+        validate_version()?;
+    }
 
     let dst = Config::new("libjxl")
         .define("BUILD_TESTING", "OFF")
