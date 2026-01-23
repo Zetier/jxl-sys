@@ -62,7 +62,17 @@ fn main() -> Result<()> {
 
     validate_version()?;
 
-    let dst = Config::new("libjxl")
+    let mut cfg = Config::new("libjxl");
+    if cfg!(target_os = "windows") {
+        // Force Release for MSVC multi-config builds to avoid unoptimized RelWithDebInfo output.
+        let profile = env::var("PROFILE").unwrap_or_default();
+        let cmake_profile = if profile == "debug" { "Debug" } else { "Release" };
+        cfg.profile(cmake_profile);
+        cfg.define("CMAKE_C_FLAGS_RELEASE", "/O2 /Ob2 /DNDEBUG");
+        cfg.define("CMAKE_CXX_FLAGS_RELEASE", "/O2 /Ob2 /DNDEBUG");
+    }
+
+    let dst = cfg
         .define("BUILD_TESTING", "OFF")
         .define("BUILD_SHARED_LIBS", "OFF")
         .define("JPEGXL_ENABLE_BENCHMARK", "OFF")
