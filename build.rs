@@ -63,7 +63,7 @@ fn main() -> Result<()> {
     validate_version()?;
 
     let mut cfg = Config::new("libjxl");
-    if cfg!(target_os = "windows", target_env = "msvc") {
+    if cfg!(all(target_os = "windows", target_env = "msvc")) {
         // Force Release for MSVC multi-config builds to avoid unoptimized RelWithDebInfo output.
         let profile = env::var("PROFILE").unwrap_or_default();
         let cmake_profile = if profile == "debug" {
