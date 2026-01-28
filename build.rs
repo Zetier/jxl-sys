@@ -64,14 +64,9 @@ fn main() -> Result<()> {
 
     let mut cfg = Config::new("libjxl");
     if cfg!(all(target_os = "windows", target_env = "msvc")) {
-        // Force Release for MSVC multi-config builds to avoid unoptimized RelWithDebInfo output.
-        let profile = env::var("PROFILE").unwrap_or_default();
-        let cmake_profile = if profile == "debug" {
-            "Debug"
-        } else {
-            "Release"
-        };
-        cfg.profile(cmake_profile);
+        // Force Release libs for debug builds to avoid MSVCRTD/CRT mismatch.
+        cfg.profile("Release");
+        cfg.define("CMAKE_MSVC_RUNTIME_LIBRARY", "MultiThreadedDLL");
         cfg.define("CMAKE_C_FLAGS_RELEASE", "/O2 /Ob2 /DNDEBUG");
         cfg.define("CMAKE_CXX_FLAGS_RELEASE", "/O2 /Ob2 /DNDEBUG");
     }
