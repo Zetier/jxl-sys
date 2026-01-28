@@ -22,6 +22,16 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.1.7+libjxl-0.11.1](https://github.com/Zetier/jxl-sys/compare/v0.1.6+libjxl-0.11.1...v0.1.7+libjxl-0.11.1) - 2026-01-28
+
+### Fixed
+
+- avoid MSVCRT mismatch by forcing Release
+
+### Other
+
+- release v0.1.6+libjxl-0.11.1
+
 ## [0.1.6+libjxl-0.11.1](https://github.com/Zetier/jxl-sys/compare/v0.1.5+libjxl-0.11.1...v0.1.6+libjxl-0.11.1) - 2026-01-26
 
 ### Fixed
