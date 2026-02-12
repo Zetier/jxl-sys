@@ -87,8 +87,20 @@ fn main() -> Result<()> {
         .env(
             "CMAKE_BUILD_PARALLEL_LEVEL",
             format!("{}", thread::available_parallelism()?),
-        )
-        .build();
+        );
+
+    let dst = if std::env::var("CARGO_FEATURE_LTO").is_ok() {
+        dst.define("CMAKE_CXX_FLAGS", "-flto=thin")
+            .define("CMAKE_C_FLAGS", "-flto=thin")
+            .define("CMAKE_POLICY_DEFAULT_CMP0069", "NEW") // enable IPO policy
+            .define("CMAKE_C_COMPILER", "clang")
+            .define("CMAKE_CXX_COMPILER", "clang++")
+            .define("CMAKE_EXE_LINKER_FLAGS", "-flto=thin")
+            .define("CMAKE_INTERPROCEDURAL_OPTIMIZATION", "TRUE")
+    } else {
+        dst
+    }
+    .build();
 
     let include = dst.join("include");
     println!(
