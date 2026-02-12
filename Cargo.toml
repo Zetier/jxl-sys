@@ -1,6 +1,6 @@
 [package]
 name = "jxl-sys"
-version = "0.1.8+libjxl-0.11.2"
+version = "0.1.9+libjxl-0.11.2"
 authors = [
   "ApertureC Team <aperturec@zetier.com>",
   "Joe Kale <joe@zetier.com>"
@@ -39,6 +39,10 @@ exclude = [
   "libjxl/third_party/zlib",
   "libjxl/third_party/brotli/js",
 ]
+
+[features]
+default = []
+lto = []
 
 [build-dependencies]
 anyhow = "1"
