@@ -24,6 +24,18 @@ All notable changes to this project will be documented in this file.
 
 ## [0.1.9+libjxl-0.11.2](https://github.com/Zetier/jxl-sys/compare/v0.1.7+libjxl-0.11.1...v0.1.9+libjxl-0.11.2) - 2026-02-13
 
+### Fixed
+
+- changelog fixup for release
+
+### Other
+
+- release v0.1.8+libjxl-0.11.2
+- Add feature flag for lto; add build flags to support lto
+- Bump version of libjxl
+
+## [0.1.9+libjxl-0.11.2](https://github.com/Zetier/jxl-sys/compare/v0.1.7+libjxl-0.11.1...v0.1.9+libjxl-0.11.2) - 2026-02-13
+
 ### Other
 
 - Add feature flag for lto; add build flags to support lto
