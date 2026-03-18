@@ -1,7 +1,9 @@
-use anyhow::{Result, anyhow, bail};
+use anyhow::{anyhow, bail, Result};
 use cmake::Config;
 use regex::Regex;
 use semver::Version;
+#[cfg(all(target_os = "windows", target_env = "msvc"))]
+use std::process::{Command, Stdio};
 use std::{env, ffi::OsStr, fs, path::PathBuf, thread};
 
 const PREFIX: &str = "libjxl-";
@@ -47,6 +49,7 @@ fn validate_version() -> Result<()> {
 
 fn main() -> Result<()> {
     println!("cargo:rerun-if-changed=libjxl/");
+    println!("cargo:rerun-if-env-changed=CMAKE_GENERATOR");
     println!("cargo:rustc-link-lib=static=jxl");
     println!("cargo:rustc-link-lib=static=jxl_cms");
     println!("cargo:rustc-link-lib=static=jxl_threads");
@@ -64,6 +67,10 @@ fn main() -> Result<()> {
 
     let mut cfg = Config::new("libjxl");
     if cfg!(all(target_os = "windows", target_env = "msvc")) {
+        if env::var_os("CMAKE_GENERATOR").is_none() && ninja_available() {
+            cfg.generator("Ninja");
+        }
+
         // Force Release libs for debug builds to avoid MSVCRTD/CRT mismatch.
         cfg.profile("Release");
         cfg.define("CMAKE_MSVC_RUNTIME_LIBRARY", "MultiThreadedDLL");
@@ -143,4 +150,20 @@ fn main() -> Result<()> {
         .write_to_file(PathBuf::from(env::var("OUT_DIR")?).join("bindings.rs"))?;
 
     Ok(())
+}
+
+#[cfg(all(target_os = "windows", target_env = "msvc"))]
+fn ninja_available() -> bool {
+    Command::new("ninja")
+        .arg("--version")
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .status()
+        .map(|status| status.success())
+        .unwrap_or(false)
+}
+
+#[cfg(not(all(target_os = "windows", target_env = "msvc")))]
+fn ninja_available() -> bool {
+    false
 }
