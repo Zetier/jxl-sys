@@ -1,4 +1,4 @@
-use anyhow::{anyhow, bail, Result};
+use anyhow::{Result, anyhow, bail};
 use cmake::Config;
 use regex::Regex;
 use semver::Version;
