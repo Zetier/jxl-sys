@@ -31,6 +31,21 @@ All notable changes to this project will be documented in this file.
 
 ### Other
 
+- release v0.1.10+libjxl-0.11.2
+- *(deps)* bump actions/create-github-app-token from 2 to 3
+- Use GitHub App token for release-plz workflows
+- Remove redundant checkout from rust-common-setup action
+- *(deps)* bump actions/checkout from 4 to 6
+
+## [0.1.10+libjxl-0.11.2](https://github.com/Zetier/jxl-sys/compare/v0.1.9+libjxl-0.11.2...v0.1.10+libjxl-0.11.2) - 2026-03-19
+
+### Added
+
+- use Ninja if available
+- use Ninja if available
+
+### Other
+
 - *(deps)* bump actions/create-github-app-token from 2 to 3
 - Use GitHub App token for release-plz workflows
 - Remove redundant checkout from rust-common-setup action
