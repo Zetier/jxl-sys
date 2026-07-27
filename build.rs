@@ -96,14 +96,19 @@ fn main() -> Result<()> {
             format!("{}", thread::available_parallelism()?),
         );
 
-    let dst = if std::env::var("CARGO_FEATURE_LTO").is_ok() {
-        dst.define("CMAKE_CXX_FLAGS", "-flto=thin")
-            .define("CMAKE_C_FLAGS", "-flto=thin")
-            .define("CMAKE_POLICY_DEFAULT_CMP0069", "NEW") // enable IPO policy
+    let dst = if env::var_os("CARGO_FEATURE_LTO").is_some() {
+        if env::var("CARGO_CFG_TARGET_OS")? != "linux" {
+            bail!("the `lto` feature currently supports only Linux targets");
+        }
+
+        let target = env::var("TARGET")?;
+        dst.define("CMAKE_CXX_FLAGS", "-flto=full")
+            .define("CMAKE_C_FLAGS", "-flto=full")
             .define("CMAKE_C_COMPILER", "clang")
+            .define("CMAKE_C_COMPILER_TARGET", &target)
             .define("CMAKE_CXX_COMPILER", "clang++")
-            .define("CMAKE_EXE_LINKER_FLAGS", "-flto=thin")
-            .define("CMAKE_INTERPROCEDURAL_OPTIMIZATION", "TRUE")
+            .define("CMAKE_CXX_COMPILER_TARGET", target)
+            .define("CMAKE_EXE_LINKER_FLAGS", "-flto=full")
     } else {
         dst
     }
