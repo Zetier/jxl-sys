@@ -22,6 +22,13 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.1.11+libjxl-0.11.2](https://github.com/Zetier/jxl-sys/compare/v0.1.10+libjxl-0.11.2...v0.1.11+libjxl-0.11.2) - 2026-07-29
+
+### Other
+
+- use full LTO for libjxl
+- *(deps)* bump actions/checkout from 6 to 7
+
 ## [0.1.10+libjxl-0.11.2](https://github.com/Zetier/jxl-sys/compare/v0.1.9+libjxl-0.11.2...v0.1.10+libjxl-0.11.2) - 2026-03-19
 
 ### Added
