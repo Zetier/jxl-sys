@@ -22,6 +22,17 @@ All notable changes to this project will be documented in this file.
 
 ## [unreleased]
 
+## [0.1.12+libjxl-0.12.0](https://github.com/Zetier/jxl-sys/compare/v0.1.11+libjxl-0.11.2...v0.1.12+libjxl-0.12.0) - 2026-08-07
+
+### Fixed
+
+- include Brotli manpages in package
+
+### Other
+
+- allow manual release-plz runs
+- *(deps)* update libjxl to 0.12.0
+
 ## [0.1.11+libjxl-0.11.2](https://github.com/Zetier/jxl-sys/compare/v0.1.10+libjxl-0.11.2...v0.1.11+libjxl-0.11.2) - 2026-07-29
 
 ### Other
